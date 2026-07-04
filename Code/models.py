@@ -6,8 +6,7 @@ MG 6/6/2026
 import torch
 import torch.nn as nn
 
-activation_str = "Identity"  # Placeholder for activation function, can be replaced with "ReLU" or others as needed.
-
+activation_str = "ReLU"
 
 class VGGBlock(nn.Module):
     """Modular VGG block with configurable number of conv layers and channels.
@@ -21,9 +20,11 @@ class VGGBlock(nn.Module):
         for i in range(num_convs):
             is_config_c_tail = (num_convs == 3 and i == 2)
             kernel_size = 1 if is_config_c_tail else 3
-            layers.append(nn.Conv2d(current_in_channels, out_channels, kernel_size=kernel_size, padding=padding))
+            pad = 0 if is_config_c_tail else padding
+            layers.append(nn.Conv2d(current_in_channels, out_channels, kernel_size=kernel_size, padding=pad))
             layers.append(nn.BatchNorm2d(out_channels))
             layers.append(nn.ReLU(inplace=True))
+            current_in_channels = out_channels
             
         layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
         self.block = nn.Sequential(*layers)
@@ -43,7 +44,6 @@ class ResBlock(nn.Module):
         self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(out_channels)
 
-        # If spatial size shrinks (stride > 1) or channels change, adjust the shortcut
         self.shortcut = nn.Identity()
         if stride != 1 or in_channels != out_channels:
             self.shortcut = nn.Sequential(
@@ -62,13 +62,13 @@ class ResBlock(nn.Module):
 
 class AlexNet(nn.Module):
     """AlexNet (Krizhevsky et al., 2012) adapted for smaller inputs."""
-    def __init__(self, **kwargs):
+    def __init__(self, in_channels=3, num_classes=11, **kwargs):
         super().__init__()
 
         drop_rate = kwargs.get("drop_rate", 0.5)
         
         self.features = nn.Sequential(
-            nn.Conv2d(3, 48, kernel_size=7, stride=2, padding=3),
+            nn.Conv2d(in_channels, 48, kernel_size=7, stride=2, padding=3),
             nn.BatchNorm2d(48),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
@@ -89,12 +89,12 @@ class AlexNet(nn.Module):
         
         self.classifier = nn.Sequential(
             nn.Dropout(p=drop_rate),
-            nn.Linear(2048, 1024),
+            nn.Linear(3072, 1024),
             nn.ReLU(inplace=True),
             nn.Dropout(p=drop_rate),
             nn.Linear(1024, 1024),
             nn.ReLU(inplace=True),
-            nn.Linear(1024, 11),
+            nn.Linear(1024, num_classes),
         )
 
     def forward(self, x):
@@ -177,4 +177,4 @@ class ResNet18(nn.Module):
         out = self.stage4(out)
         out = self.avgpool(out)
         out = torch.flatten(out, 1)
-        self.classifier(out)
+        return self.classifier(out)

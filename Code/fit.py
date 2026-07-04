@@ -19,10 +19,12 @@ class Trainer:
         
         for images, labels in dataloader:
             images, labels = images.to(self.device), labels.to(self.device)
+            labels = labels.flatten()
             
             outputs = self.model(images)
             loss = self.criterion(outputs, labels)
             
+            self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
             
@@ -41,6 +43,7 @@ class Trainer:
         with torch.no_grad():
             for images, labels in dataloader:
                 images, labels = images.to(self.device), labels.to(self.device)
+                labels = labels.flatten()
                 
                 outputs = self.model(images)
                 loss = self.criterion(outputs, labels)
