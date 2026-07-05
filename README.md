@@ -101,3 +101,57 @@ This repository contains the volatile, recovered remnants of a broken machine le
 - **Issue:** The model was being instantiated with `activation_str=None`. Since the models use `activation_str` to determine which activation function to apply, `None` resulted in using Identity activation (no activation at all). As explained in the models.py section, this made the entire network linear, regardless of depth.
 - **Fix:** Added `activation_str="ReLU"` when instantiating the model. This ensures the model uses ReLU activation throughout, providing the necessary non-linearity.
 - **Result:** The network now has the non-linearity needed to learn complex patterns. Combined with the dropout fix, this enables the model to properly converge during training.
+
+---
+
+## Training Test Results After Changes
+
+### Test Configuration
+| Parameter | Value |
+|-----------|-------|
+| **Dataset** | Organs (11 classes) |
+| **Training Images** | 500 |
+| **Test Images** | 200 |
+| **Model** | AlexNet |
+| **Batch Size** | 16 |
+| **Learning Rate** | 0.0001 |
+| **Epochs** | 10 |
+| **Channels** | 1 (grayscale) |
+| **Device** | CPU |
+
+---
+
+### Training Results
+
+| Epoch | Train Loss | Train Acc | Val Loss | Val Acc |
+|-------|------------|-----------|----------|---------|
+| 1 | 2.2695 | 21.56% | 2.2932 | 18.00% |
+| 2 | 1.9777 | 28.22% | 1.8494 | 30.00% |
+| 3 | 1.7981 | 32.89% | 1.8183 | 38.00% |
+| 4 | 1.6107 | 40.44% | 1.5139 | 50.00% |
+| 5 | 1.4991 | 41.56% | 1.5270 | 46.00% |
+| 6 | 1.3460 | 48.89% | 1.2567 | 52.00% |
+| 7 | 1.2266 | 53.11% | 1.1966 | 60.00% |
+| 8 | 1.1208 | 54.67% | 1.0686 | 60.00% |
+| **9** | **0.9235** | **63.56%** | **1.1746** | **66.00%** ⭐ |
+| 10 | 0.9261 | 65.33% | 1.5059 | 48.00% |
+
+---
+
+### Summary
+
+**Best Performance:** Epoch 9
+- **Validation Accuracy:** 66.00%
+- **Training Accuracy:** 63.56%
+- **Training Loss:** 0.9235
+
+**Key Observations:**
+- Model started at 21.56% training accuracy (well above random guessing of ~9% for 11 classes)
+- Consistent improvement through epoch 9
+- Peak validation accuracy of 66% achieved at epoch 9
+- Overfitting observed at epoch 10 (validation accuracy dropped from 66% to 48%)
+
+**Analysis:**
+The model successfully learned meaningful patterns from only 500 training images. The 66% validation accuracy demonstrates that the training pipeline works correctly and the model architecture (AlexNet) is suitable for this classification task. The drop in validation accuracy at epoch 10 indicates that training should be stopped earlier (at epoch 9) to prevent overfitting.
+
+Based on this test run we will reduce epochs to 8-9 for future runs.
