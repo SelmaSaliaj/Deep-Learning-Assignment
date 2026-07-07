@@ -13,7 +13,7 @@
 
 ---
 
-### Chest Dataset Results (Binary Classification)
+### Chest Dataset Results
 
 | Model | Best Validation Accuracy | Epoch | Training Accuracy | Time | Overfitting |
 |-------|--------------------------|-------|-------------------|------|-------------|

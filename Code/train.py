@@ -11,10 +11,38 @@ import torch.optim as optim
 from data import get_loaders
 import models
 from fit import Trainer
+import argparse
 
 def main():   
-    with open("config.json", "r") as f:
+
+    parser = argparse.ArgumentParser(description='Train a model on medical imaging data')
+    parser.add_argument('--config', type=str, default='config.json', help='Path to config file')
+    parser.add_argument('--data', type=str, help='Dataset name (organs, chest, orgs, lesions, cells)')
+    parser.add_argument('--model', type=str, help='Model architecture (AlexNet, VGG16, ResNet18)')
+    parser.add_argument('--channels', type=int, help='Number of input channels (1 or 3)')
+    parser.add_argument('--num_classes', type=int, help='Number of output classes')
+    parser.add_argument('--batch_size', type=int, help='Batch size')
+    parser.add_argument('--lr', type=float, help='Learning rate')
+    parser.add_argument('--epochs', type=int, help='Number of epochs')
+    args = parser.parse_args()
+
+    with open(args.config, "r") as f:
         config = json.load(f)
+
+    if args.data:
+        config["DATA"] = args.data
+    if args.model:
+        config["MODEL"] = args.model
+    if args.channels:
+        config["CHANNELS"] = args.channels
+    if args.num_classes:
+        config["NUM_CLASSES"] = args.num_classes
+    if args.batch_size:
+        config["BATCH_SIZE"] = args.batch_size
+    if args.lr:
+        config["LEARNING_RATE"] = args.lr
+    if args.epochs:
+        config["EPOCHS"] = args.epochs
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Training executing on device: {device}")
