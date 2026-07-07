@@ -1,10 +1,10 @@
 {
-    "DATA": "organs",
-    "DATA_PATH": "..\\data",
+    "DATA": "chest",
+    "DATA_PATH": "../data",
     "BATCH_SIZE": 16,
-    "MODEL": "AlexNet",
+    "MODEL": "VGG16",
     "CHANNELS": 1,
-    "NUM_CLASSES": 11,
+    "NUM_CLASSES": 2,
     "LEARNING_RATE": 0.0001,
-    "EPOCHS": 8
+    "EPOCHS": 5
 }
