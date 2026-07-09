@@ -30,7 +30,6 @@ def main():
     
     model = models.AlexNet(in_channels=args.channels, num_classes=args.target_classes, drop_rate=0.3, activation_str="ReLu").to(device)
     
-    # Load pre-trained weights from models/ folder
     source_file = Path(args.model_dir) / f"training_resuts_{args.source}_AlexNet.pt"
     print(f"Loading pre-trained weights from: {source_file}")
     
