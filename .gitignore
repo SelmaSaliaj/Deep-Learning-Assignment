@@ -3,3 +3,4 @@ data/lesions.pt
 data/orgs.pt
 __pycache__/
 *.pyc
+*.pt

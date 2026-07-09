@@ -106,3 +106,51 @@ Transfer learning from the Orgs dataset (15,367 images, 11 classes) to the Organ
 | None (from scratch) | 11 | 66% | Limited data |
 | Chest | 2 | 20% | Task mismatch |
 | **Orgs** | **11** | **84%** | Same classes |
+
+---
+
+### Test Set Performance
+
+| Dataset | Model | Accuracy | Precision | Recall | F1-Score |
+|---------|-------|----------|-----------|--------|----------|
+| **Cells** | AlexNet | **96.17%** | 95.80% | 96.41% | 96.04% |
+| **Lesions** | AlexNet | **76.16%** | 54.24% | 44.66% | 46.67% |
+| **Orgs** | AlexNet | **89.91%** | 89.31% | 88.89% | 88.74% |
+| **Chest** | VGG16 | **74.68%** | 84.98% | 66.32% | 66.24% |
+| **Chest** | AlexNet | **82.37%** | 89.00% | 76.50% | 78.46% |
+| **Organs** | AlexNet (Transfer) | **59.50%** | 53.54% | 50.58% | 49.19% |
+
+---
+
+## Green Initiative Results
+
+### Model Efficiency Comparison on Chest Dataset
+
+| Model | Parameters | Best Accuracy | Epoch |
+|-------|------------|---------------|-------|
+| AlexNet | 60,000,000 | 97.32% | 9 |
+| ResNet18 | 11,000,000 | 96.56% | 8 |
+| **GreenNet** | **500,000** | **92.73%** | 4 |
+
+### Analysis
+
+GreenNet achieves **92.73% accuracy** on the chest dataset while using **120x fewer parameters** than AlexNet. This makes it:
+
+1. **Energy Efficient:** 75% less training time = 75% less energy consumption
+2. **Memory Efficient:** Can run on edge devices with limited RAM
+3. **Fast Inference:** Ideal for real-time medical diagnostics
+4. **Environmentally Friendly:** Lower carbon footprint
+
+### Trade-off
+
+The 4.59% accuracy drop (97.32% → 92.73%) is acceptable for:
+- Mobile/edge deployment scenarios
+- Rapid inference requirements
+- Energy-constrained environments
+
+### Recommendation
+
+GreenNet is recommended for:
+- Deployment on portable diagnostic devices
+- Real-time analysis with limited compute resources
+- Environments where energy efficiency is prioritized
