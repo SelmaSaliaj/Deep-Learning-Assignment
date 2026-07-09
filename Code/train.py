@@ -12,6 +12,7 @@ from data import get_loaders
 import models
 from fit import Trainer
 import argparse
+from pathlib import Path
 
 def main():   
 
@@ -24,6 +25,7 @@ def main():
     parser.add_argument('--batch_size', type=int, help='Batch size')
     parser.add_argument('--lr', type=float, help='Learning rate')
     parser.add_argument('--epochs', type=int, help='Number of epochs')
+    parser.add_argument('--save_dir', type=str, default='../models', help='Directory to save models')
     args = parser.parse_args()
 
     with open(args.config, "r") as f:
@@ -44,6 +46,10 @@ def main():
     if args.epochs:
         config["EPOCHS"] = args.epochs
 
+    save_path = Path(args.save_dir)
+    save_path.mkdir(parents=True, exist_ok=True)
+    print(f"Models will be saved to: {save_path.absolute()}")
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Training executing on device: {device}")
 
@@ -56,6 +62,10 @@ def main():
 
     trainer = Trainer(model, criterion, optimizer, device)
     trainer.fit(train_loader, val_loader, epochs=config["EPOCHS"])
+
+    model_filename = save_path / f"training_resuts_{config['DATA']}_{config['MODEL']}.pt"
+    torch.save(model.state_dict(), model_filename)
+    print(f"\nModel saved as {model_filename}")
 
 if __name__ == "__main__":
     main()
