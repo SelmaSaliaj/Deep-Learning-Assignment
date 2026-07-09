@@ -72,3 +72,37 @@
 **Recommended Model:** AlexNet
 - Best performance: 96.78% validation accuracy
 - Excellent performance overall
+
+---
+
+## Transfer Learning Results - Organs Dataset
+
+### Summary
+
+| Method | Model | Epochs | Best Accuracy | Improvement | Target (83%) |
+|--------|-------|--------|---------------|-------------|--------------|
+| From Scratch | AlexNet | 10 | 66% | Baseline | ❌ |
+| From Scratch | ResNet18 | 8 | 78% | +12% | ❌ |
+| Transfer (Orgs→Organs) | AlexNet | 10 | 74% | +8% | ❌ |
+| **Transfer (Orgs→Organs)** | **AlexNet** | **20** | **84%** | **+18%** | ✅ |
+
+### Analysis
+Transfer learning from the Orgs dataset (15,367 images, 11 classes) to the Organs dataset (500 images, 11 classes) successfully achieved **84% validation accuracy**, exceeding the 83% target.
+
+**Key Observations:**
+- Transfer learning improved AlexNet from 66% → 84% (+18%)
+- 20 epochs of fine-tuning was optimal (10 epochs only reached 74%)
+- No overfitting observed despite 20 epochs of training
+- Orgs provided excellent feature knowledge due to matching class structure
+- Transfer from Chest (2 classes) failed due to task mismatch
+- Transfer learning works best when source and target share the same classes
+
+**Recommendation:** For small datasets with limited samples, transfer learning from a related dataset with the same class structure is highly effective. AlexNet with transfer learning outperformed ResNet18 trained from scratch (78%).
+
+### Comparison
+
+| Source Dataset | Classes | Best Accuracy | Why |
+|----------------|---------|---------------|-----|
+| None (from scratch) | 11 | 66% | Limited data |
+| Chest | 2 | 20% | Task mismatch |
+| **Orgs** | **11** | **84%** | Same classes |

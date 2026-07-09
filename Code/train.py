@@ -12,6 +12,7 @@ from data import get_loaders
 import models
 from fit import Trainer
 import argparse
+from pathlib import Path
 
 def main():   
 
@@ -24,6 +25,7 @@ def main():
     parser.add_argument('--batch_size', type=int, help='Batch size')
     parser.add_argument('--lr', type=float, help='Learning rate')
     parser.add_argument('--epochs', type=int, help='Number of epochs')
+    parser.add_argument('--save_dir', type=str, default='../models', help='Directory to save models')
     args = parser.parse_args()
 
     with open(args.config, "r") as f:
@@ -44,18 +46,26 @@ def main():
     if args.epochs:
         config["EPOCHS"] = args.epochs
 
+    save_path = Path(args.save_dir)
+    save_path.mkdir(parents=True, exist_ok=True)
+    print(f"Models will be saved to: {save_path.absolute()}")
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Training executing on device: {device}")
 
     train_loader, val_loader, _ = get_loaders(data=config["DATA"], data_path=config["DATA_PATH"], batch_size=config["BATCH_SIZE"])
 
     model_class = getattr(models, config["MODEL"])
-    model = model_class(in_channels=config["CHANNELS"], num_classes=config["NUM_CLASSES"], drop_rate=0.3, activation_str="ReLu").to(device)
+    model = model_class(in_channels=config["CHANNELS"], num_classes=config["NUM_CLASSES"], drop_rate=0.3, activation_str="ReLU").to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=config["LEARNING_RATE"])
 
     trainer = Trainer(model, criterion, optimizer, device)
     trainer.fit(train_loader, val_loader, epochs=config["EPOCHS"])
+
+    model_filename = save_path / f"training_resuts_{config['DATA']}_{config['MODEL']}.pt"
+    torch.save(model.state_dict(), model_filename)
+    print(f"\nModel saved as {model_filename}")
 
 if __name__ == "__main__":
     main()
