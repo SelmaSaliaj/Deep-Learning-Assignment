@@ -24,7 +24,7 @@ This repository contains the volatile, recovered remnants of a broken machine le
 ### Repository README
 
 * **Professional Documentation:** Remember to update this `README` with a professional documentation of your repo.
-* **Author(s):** Selma Saliaj, Nensi Mecalla
+* **Author(s):** Selma Saliaj (10013138), Nensi Mecalla (10012740)
 
 ## Bug Fixes & Improvements
 
